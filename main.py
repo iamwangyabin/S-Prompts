@@ -22,9 +22,6 @@ def setup_parser():
     parser = argparse.ArgumentParser(description='Reproduce of multiple continual learning algorthms.')
     parser.add_argument('--config', type=str, default='./exps/finetune.json',
                         help='Json file of settings.')
-    parser.add_argument('--resume_base', type=str, default='',
-                        help='resume model')
-
     return parser
 
 

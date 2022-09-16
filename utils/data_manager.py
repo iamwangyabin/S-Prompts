@@ -3,8 +3,7 @@ import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-from utils.data import iCIFAR10, iCIFAR100, iImageNet100, iImageNet1000
-from utils.data import iCIFAR100_vit, iGanFake, iGanClass
+from utils.data import iGanFake
 
 
 
@@ -20,10 +19,6 @@ class DataManager(object):
         offset = len(self._class_order) - sum(self._increments)
         if offset > 0:
             self._increments.append(offset)
-
-        self.attack = [
-            transforms.ToTensor(),
-        ]
 
 
     @property
@@ -47,8 +42,6 @@ class DataManager(object):
             trsf = transforms.Compose([*self._test_trsf, transforms.RandomHorizontalFlip(p=1.), *self._common_trsf])
         elif mode == 'test':
             trsf = transforms.Compose([*self._test_trsf, *self._common_trsf])
-        elif mode == 'attack':
-            trsf = transforms.Compose([*self._test_trsf, *self.attack])
 
         else:
             raise ValueError('Unknown mode {}.'.format(mode))
@@ -198,20 +191,8 @@ def _map_new_class_index(y, order):
 
 def _get_idata(dataset_name, args=None):
     name = dataset_name.lower()
-    if name == 'cifar10':
-        return iCIFAR10()
-    elif name == 'cifar100':
-        return iCIFAR100()
-    elif name == 'imagenet1000':
-        return iImageNet1000()
-    elif name == "imagenet100":
-        return iImageNet100()
-    elif name == "cifar100_vit":
-        return iCIFAR100_vit()
-    elif name == "ganfake":
+    if name == "cddb":
         return iGanFake(args)
-    elif name == "ganclass":
-        return iGanClass(args)
     else:
         raise NotImplementedError('Unknown dataset {}.'.format(dataset_name))
 

@@ -8,6 +8,16 @@ Yabin Wang, Zhiwu Huang, Xiaopeng Hong <br>
 [[Project Page]](https://arxiv.org/abs/2205.05467.pdf) [[Paper]](https://arxiv.org/abs/2205.05467.pdf) [[Video]](https://www.youtube.com/watch?v=bszy34vY-2o)
 
 ## Dependencies
+
+```python
+conda create -n sp python=3.8
+conda activate sp
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+
+```
+
+
+
 Run `pip instalasdfdsafdasfdsafl -r requirements.txt` to install required dependencies.
 
 ## Datasets
@@ -52,26 +62,8 @@ Using iCaRL, train the model with binary/multi labels, with different sequences:
 cd iCaRL
 python main_icarl_CNND.py --name icarl_easy_m1500_sumasig0.1 --checkpoints_dir ./datasets/checkpoints --model_weights ./datasets/checkpoints/no_aug/model_epoch_best.pth --dataroot ./datasets/CDDB/ --task_name gaugan,biggan,cyclegan,imle,deepfake,crn,wild --multiclass  0 0 1 0 0 0 0  --batch_size 32 --num_epochs 30 --schedule 10 20 30 --add_binary --binary_weight 0.1 --binary_loss sum_a_sig
 ```
-### Loss Term:
 
-As described in the paper, we implement diffent kinds of binary loss term
 
-SumLogit
-```
---binary_loss sum_a_sig
-```
-SumFeat
-```
---binary_loss sum_b_sig
-```
-SumLog
-```
---binary_loss sum_b_log
-```
-Max
-```
---binary_loss max 
-```
 
 ## Citation
 

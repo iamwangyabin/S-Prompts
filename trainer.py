@@ -27,7 +27,7 @@ def train(args):
 
 
 def _train(args):
-    logfilename = 'logs/{}_{}_{}_{}_{}_{}_{}_'.format(args['prefix'], args['seed'], args['model_name'], args['convnet_type'],
+    logfilename = 'logs/{}_{}_{}_{}_{}_{}_{}_'.format(args['prefix'], args['seed'], args['model_name'], args['net_type'],
                                                 args['dataset'], args['init_cls'], args['increment'])+ time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     logging.basicConfig(
         level=logging.INFO,
@@ -46,42 +46,25 @@ def _train(args):
     args['class_order'] = data_manager._class_order
     model = factory.get_model(args['model_name'], args)
 
-    cnn_curve, nme_curve = {'top1': [], 'top5': []}, {'top1': [], 'top5': []}
+    cnn_curve, nme_curve = {'top1': []}, {'top1': []}
     for task in range(data_manager.nb_tasks):
         logging.info('All params: {}'.format(count_parameters(model._network)))
         logging.info('Trainable params: {}'.format(count_parameters(model._network, True)))
-        if len(args['resume_base']) >0 and task == 0:
-            model_statedict = torch.load(args['resume_base'])._network.state_dict()
-            model.incremental_resume(data_manager, model_statedict)
-        else:
-            model.incremental_train(data_manager)
-
+        model.incremental_train(data_manager)
         cnn_accy, nme_accy = model.eval_task()
         model.after_task()
 
         if nme_accy is not None:
             logging.info('CNN: {}'.format(cnn_accy['grouped']))
             logging.info('NME: {}'.format(nme_accy['grouped']))
-
             cnn_curve['top1'].append(cnn_accy['top1'])
-            cnn_curve['top5'].append(cnn_accy['top5'])
-
             nme_curve['top1'].append(nme_accy['top1'])
-            nme_curve['top5'].append(nme_accy['top5'])
-
             logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
-            logging.info('CNN top5 curve: {}'.format(cnn_curve['top5']))
             logging.info('NME top1 curve: {}'.format(nme_curve['top1']))
-            logging.info('NME top5 curve: {}\n'.format(nme_curve['top5']))
         else:
-            logging.info('No NME accuracy.')
             logging.info('CNN: {}'.format(cnn_accy['grouped']))
-
             cnn_curve['top1'].append(cnn_accy['top1'])
-            cnn_curve['top5'].append(cnn_accy['top5'])
-
             logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
-            logging.info('CNN top5 curve: {}\n'.format(cnn_curve['top5']))
 
         torch.save(model, os.path.join(logfilename, "task_{}.pth".format(int(task))))
 
