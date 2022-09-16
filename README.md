@@ -1,2 +1,2 @@
 # S-Prompts
-Code for NIPS2022 S-Prompts
+The code of S-Prompts (NIPS2022) will be coming soon.
