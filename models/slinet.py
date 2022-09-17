@@ -23,7 +23,7 @@ class SliNet(nn.Module):
         if args["dataset"] == "cddb":
             self.classifier_pool = nn.ModuleList([
                 PromptLearner(self.cfg, list(cddb_classnames.values()), self.clip_model)
-                for i in range(args["total_sessions"])
+                for i in range(args["total_sessions"]+2)
             ])
             self.class_num = 2
         elif args["dataset"] == "domainnet":

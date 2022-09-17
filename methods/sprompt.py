@@ -94,7 +94,7 @@ class SPrompts(BaseLearner):
     def train_function(self, train_loader, test_loader, optimizer, scheduler):
         prog_bar = tqdm(range(self.epochs))
         for _, epoch in enumerate(prog_bar):
-            self._network.train()
+            self._network.eval()
             losses = 0.
             correct, total = 0, 0
             for i, (_, inputs, targets) in enumerate(train_loader):
