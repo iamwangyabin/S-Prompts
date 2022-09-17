@@ -1,6 +1,6 @@
 # S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning
 
-Pytorch implementation for NIPS 2022 paper "S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning".
+This is the official implementation of our NIPS 2022 paper "S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning".
 In this paper, we propose one simple paradigm (named as S-Prompting) and two concrete approaches to highly reduce the forgetting degree in one of the most typical continual learning scenarios, i.e., domain increment learning (DIL).
 
 **S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning** <br>
@@ -21,58 +21,138 @@ conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 Run `pip instalasdfdsafdasfdsafl -r requirements.txt` to install required dependencies.
 
 ## Datasets
-Download the following datasets to `datasets/`
-* [CDDB benchmark Dataset]()
+Please refer to the following links to download and prepare data. 
+```
+DomainNet:
+http://ai.bu.edu/M3SDA/
+CoRE50:
+https://vlomonaco.github.io/core50/index.html#dataset
+CDDB (need to ask the authors for the deepfake data):
+https://arxiv.org/abs/2205.05467
+```
 
 Organize the dataset folder as:
+
 ```
-Project
-├── datasets
-|   ├── CDDB
-|   ├── checkpoints
+domainnet
+├── clipart
+│   ├── aircraft_carrier
+│   ├── airplane
+│   ├── alarm_clock
+│   ├── ambulance
+│   ├── angel
+│   ├── animal_migration
+│   ... ...
+├── clipart_test.txt
+├── clipart_train.txt
+├── infograph
+│   ├── aircraft_carrier
+│   ├── airplane
+│   ├── alarm_clock
+│   ├── ambulance
+│   ... ...
+├── infograph_test.txt
+├── infograph_train.txt
+├── painting
+│   ├── aircraft_carrier
+│   ├── airplane
+│   ├── alarm_clock
+│   ├── ambulance
+│   ├── angel
+│   ... ...
+... ...
+```
+
+```
+core50
+└── core50_128x128
+    ├── labels.pkl
+    ├── LUP.pkl
+    ├── paths.pkl
+    ├── s1
+    ├── s10
+    ├── s11
+    ├── s2
+    ├── s3
+    ├── s4
+    ├── s5
+    ├── s6
+    ├── s7
+    ├── s8
+    └── s9
+
+```
+```
+CDDB
+├── biggan
+│   ├── test
+│   ├── train
+│   └── val
+├── gaugan
+│   ├── test
+│   ├── train
+│   └── val
+├── san
+│   ├── test
+│   ├── train
+│   └── val
+├── whichfaceisreal
+│   ├── test
+│   ├── train
+│   └── val
+├── wild
+│   ├── test
+│   ├── train
+│   └── val
+... ...
 ```
 
 
 
 ## Training:
-### DyTox
-Using DyTox, train the model with binary/multi labels, with different sequences:
+
+
+### DomainNet:
 ```
-cd DyTox
-bash train.sh 0,1 \
-    --options configs/data/ganfake_easy.yaml configs/data/ganfake_easy_order.yaml configs/model/ganfake_pretrain_dytox.yaml \
-    --name dytox_easy_m1500_sumblog0.1 \
-    --data-path ./datasets/CDDB/  \
-    --output-basedir ./datasets/checkpoints  \
-    --memory-size 1500 \
-    --binary_loss sum_b_log \
-    --binary_weight 0.1
+python main.py --config configs/cddb_hard_slip.json
 ```
 
-### LUCIR:
-Using LUCIR, train the model with binary/multi labels, with different sequences:
+### CoRE50:
 ```
-cd LUCIR
-python lucir_main.py --name lucir_easy_m1500_sumasig0.1 --checkpoints_dir ./datasets/checkpoints  --dataroot ./datasets/CDDB/ --task_name gaugan,biggan,cyclegan,imle,deepfake,crn,wild --multiclass  0 0 1 0 0 0 0 --batch_size 32 --num_epochs 40 --binary_loss sum_a_sig --binary_weight 0.1
+python main.py --config configs/cddb_hard_slip.json
 ```
 
-### iCaRL:
-Using iCaRL, train the model with binary/multi labels, with different sequences:
+### CDDB:
 ```
-cd iCaRL
-python main_icarl_CNND.py --name icarl_easy_m1500_sumasig0.1 --checkpoints_dir ./datasets/checkpoints --model_weights ./datasets/checkpoints/no_aug/model_epoch_best.pth --dataroot ./datasets/CDDB/ --task_name gaugan,biggan,cyclegan,imle,deepfake,crn,wild --multiclass  0 0 1 0 0 0 0  --batch_size 32 --num_epochs 30 --schedule 10 20 30 --add_binary --binary_weight 0.1 --binary_loss sum_a_sig
+python main.py --config configs/cddb_hard_slip.json
 ```
 
+## Evaluation:
+
+Please refer to 
+[[Evaluation Code]](https://github.com/iamwangyabin/SPrompts_eval).
+
+## License
+
+Please check the MIT  [license](./LICENSE) that is listed in this repository.
+
+
+## Acknowledgments
+
+We thank the following repos providing helpful components/functions in our work.
+
+- [PyCIL](https://github.com/G-U-N/PyCIL)
+- [Best Incremental Learning](https://github.com/Vision-Intelligence-and-Robots-Group/Best-Incremental-Learning)
 
 
 ## Citation
 
 When using the code/figures/data/etc., please cite our work
 ```
-@article{li2022continual,
-  title={A Continual Deepfake Detection Benchmark: Dataset, Methods, and Essentials},
-  author={Li, Chuqiao and Huang, Zhiwu and Paudel, Danda Pani and Wang, Yabin and Shahbazi, Mohamad and Hong, Xiaopeng and Van Gool, Luc},
-  journal={arXiv preprint arXiv:2205.05467},
+@article{wang2022s,
+  title={S-Prompts Learning with Pre-trained Transformers: An Occam's Razor for Domain Incremental Learning},
+  author={Wang, Yabin and Huang, Zhiwu and Hong, Xiaopeng},
+  journal={arXiv preprint arXiv:2207.12819},
   year={2022}
 }
 ```

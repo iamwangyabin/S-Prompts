@@ -20,14 +20,15 @@ class SliNet(nn.Module):
         self.dtype = clip_model.dtype
 
 
-        self.prompt_learner = PromptLearner(self.cfg, ['real', 'fake'], clip_model)
+        # self.prompt_learner = PromptLearner(self.cfg, ['real', 'fake'], clip_model)
+        # self.tokenized_prompts = self.prompt_learner.tokenized_prompts
 
 
         self.class_num = 1
         if args["dataset"] == "cddb":
             self.classifier_pool = nn.ModuleList([
                 PromptLearner(self.cfg, list(cddb_classnames.values()), self.clip_model)
-                for i in range(args["total_sessions"]+2)
+                for i in range(args["total_sessions"])
             ])
             self.class_num = 2
         elif args["dataset"] == "domainnet":
@@ -47,10 +48,10 @@ class SliNet(nn.Module):
 
         self.prompt_pool = nn.ModuleList([
             nn.Linear(args["embd_dim"], args["prompt_length"], bias=False)
-            for i in range(args["total_sessions"]+2)
+            for i in range(args["total_sessions"])
         ])
 
-        self.instance_keys = nn.Linear(768, 10, bias=False)
+        # self.instance_keys = nn.Linear(768, 10, bias=False)
 
 
         self.numtask = 0
@@ -70,7 +71,7 @@ class SliNet(nn.Module):
         image_features = self.image_encoder(image.type(self.dtype), self.prompt_pool[self.numtask-1].weight)
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
 
-        prompts = self.classifier_pool[-1]
+        prompts = self.classifier_pool[self.numtask-1]
         tokenized_prompts = prompts.tokenized_prompts
         text_features = self.text_encoder(prompts(), tokenized_prompts)
         text_features = text_features / text_features.norm(dim=-1, keepdim=True)

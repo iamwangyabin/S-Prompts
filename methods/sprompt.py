@@ -71,7 +71,7 @@ class SPrompts(BaseLearner):
         logging.info('Learning on {}-{}'.format(self._known_classes, self._total_classes))
 
         train_dataset = data_manager.get_dataset(np.arange(self._known_classes, self._total_classes), source='train',
-                                                 mode='train', appendent=self._get_memory())
+                                                 mode='train')
         self.train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True,
                                        num_workers=self.num_workers)
         test_dataset = data_manager.get_dataset(np.arange(0, self._total_classes), source='test', mode='test')
@@ -81,7 +81,7 @@ class SPrompts(BaseLearner):
         if len(self._multiple_gpus) > 1:
             self._network = nn.DataParallel(self._network, self._multiple_gpus)
         self._train(self.train_loader, self.test_loader)
-        self.build_rehearsal_memory(data_manager, self.samples_per_class)
+        # self.build_rehearsal_memory(data_manager, self.samples_per_class)
 
         self.clustering(self.train_loader)
         if len(self._multiple_gpus) > 1:
@@ -96,8 +96,8 @@ class SPrompts(BaseLearner):
             param.requires_grad_(False)
             if "classifier_pool" + "." + str(self._network.module.numtask - 1) in name:
                 param.requires_grad_(True)
-            if "instance_keys" in name:
-                param.requires_grad_(True)
+            # if "instance_keys" in name:
+            #     param.requires_grad_(True)
             if "prompt_pool" + "." + str(self._network.module.numtask - 1) in name:
                 param.requires_grad_(True)
 
