@@ -147,7 +147,7 @@ We thank the following repos providing helpful components/functions in our work.
 
 ## Citation
 
-When using the code/figures/data/etc., please cite our work
+If you use any content of this repo for your work, please cite the following bib entry:
 ```
 @article{wang2022s,
   title={S-Prompts Learning with Pre-trained Transformers: An Occam's Razor for Domain Incremental Learning},
