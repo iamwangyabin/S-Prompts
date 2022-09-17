@@ -29,6 +29,20 @@ class SPrompts(BaseLearner):
 
         self.args = args
         self.EPSILON = args["EPSILON"]
+        # self.epochs = args["epochs"]
+        # self.lrate = args["lrate"]
+        # self.milestones = args["milestones"]
+        # self.lrate_decay = args["lrate_decay"]
+        # self.batch_size = args["batch_size"]
+        # self.weight_decay = args["weight_decay"]
+        # self.num_workers = args["num_workers"]
+
+
+        self.init_epoch = args["init_epoch"]
+        self.init_lr = args["init_lr"]
+        self.init_milestones = args["init_milestones"]
+        self.init_lr_decay = args["init_lr_decay"]
+        self.init_weight_decay = args["init_weight_decay"]
         self.epochs = args["epochs"]
         self.lrate = args["lrate"]
         self.milestones = args["milestones"]
@@ -36,6 +50,9 @@ class SPrompts(BaseLearner):
         self.batch_size = args["batch_size"]
         self.weight_decay = args["weight_decay"]
         self.num_workers = args["num_workers"]
+
+
+
         self.topk = 2  # origin is 5
         self.class_num = self._network.class_num
 
@@ -54,7 +71,7 @@ class SPrompts(BaseLearner):
         logging.info('Learning on {}-{}'.format(self._known_classes, self._total_classes))
 
         train_dataset = data_manager.get_dataset(np.arange(self._known_classes, self._total_classes), source='train',
-                                                 mode='train')
+                                                 mode='train', appendent=self._get_memory())
         self.train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True,
                                        num_workers=self.num_workers)
         test_dataset = data_manager.get_dataset(np.arange(0, self._total_classes), source='test', mode='test')
@@ -64,6 +81,8 @@ class SPrompts(BaseLearner):
         if len(self._multiple_gpus) > 1:
             self._network = nn.DataParallel(self._network, self._multiple_gpus)
         self._train(self.train_loader, self.test_loader)
+        self.build_rehearsal_memory(data_manager, self.samples_per_class)
+
         self.clustering(self.train_loader)
         if len(self._multiple_gpus) > 1:
             self._network = self._network.module
@@ -77,6 +96,8 @@ class SPrompts(BaseLearner):
             param.requires_grad_(False)
             if "classifier_pool" + "." + str(self._network.module.numtask - 1) in name:
                 param.requires_grad_(True)
+            if "instance_keys" in name:
+                param.requires_grad_(True)
             if "prompt_pool" + "." + str(self._network.module.numtask - 1) in name:
                 param.requires_grad_(True)
 
@@ -86,13 +107,25 @@ class SPrompts(BaseLearner):
             if param.requires_grad:
                 enabled.add(name)
         print(f"Parameters to be updated: {enabled}")
+        if self._cur_task==0:
+            optimizer = optim.SGD(self._network.parameters(), momentum=0.9,lr=self.init_lr,weight_decay=self.init_weight_decay)
+            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=self.init_epoch)
+            self.run_epoch = self.init_epoch
 
-        optimizer = optim.SGD(self._network.parameters(), momentum=0.9, lr=self.lrate, weight_decay=self.weight_decay)
-        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=self.epochs)
-        self.train_function(train_loader, test_loader, optimizer, scheduler)
+            self.train_function(train_loader,test_loader,optimizer,scheduler)
+        else:
+            optimizer = optim.SGD(self._network.parameters(), momentum=0.9,lr=self.lrate,weight_decay=self.weight_decay)
+            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=self.epochs)
+            self.run_epoch = self.epochs
+
+            self.train_function(train_loader, test_loader, optimizer, scheduler)
+
+        # optimizer = optim.SGD(self._network.parameters(), momentum=0.9, lr=self.lrate, weight_decay=self.weight_decay)
+        # scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=self.epochs)
+        # self.train_function(train_loader, test_loader, optimizer, scheduler)
 
     def train_function(self, train_loader, test_loader, optimizer, scheduler):
-        prog_bar = tqdm(range(self.epochs))
+        prog_bar = tqdm(range(self.run_epoch))
         for _, epoch in enumerate(prog_bar):
             self._network.eval()
             losses = 0.

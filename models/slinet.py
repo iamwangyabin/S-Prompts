@@ -19,6 +19,10 @@ class SliNet(nn.Module):
         self.logit_scale = clip_model.logit_scale
         self.dtype = clip_model.dtype
 
+
+        self.prompt_learner = PromptLearner(self.cfg, ['real', 'fake'], clip_model)
+
+
         self.class_num = 1
         if args["dataset"] == "cddb":
             self.classifier_pool = nn.ModuleList([
@@ -43,8 +47,11 @@ class SliNet(nn.Module):
 
         self.prompt_pool = nn.ModuleList([
             nn.Linear(args["embd_dim"], args["prompt_length"], bias=False)
-            for i in range(args["total_sessions"])
+            for i in range(args["total_sessions"]+2)
         ])
+
+        self.instance_keys = nn.Linear(768, 10, bias=False)
+
 
         self.numtask = 0
 
