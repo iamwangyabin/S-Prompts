@@ -275,4 +275,5 @@ class CORE50(object):
 
         assert (x is not None), 'Problems loading data. x is None!'
 
-        return
+        return x
+

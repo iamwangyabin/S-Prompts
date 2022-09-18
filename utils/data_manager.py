@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-from utils.data import iGanFake
+from utils.data import iGanFake, iCore50, iDomainNet
 
 
 
@@ -193,6 +193,10 @@ def _get_idata(dataset_name, args=None):
     name = dataset_name.lower()
     if name == "cddb":
         return iGanFake(args)
+    elif name == 'core50':
+        return iCore50(args)
+    elif name == 'domainnet':
+        return iDomainNet(args)
     else:
         raise NotImplementedError('Unknown dataset {}.'.format(dataset_name))
 
