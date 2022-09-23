@@ -19,11 +19,6 @@ class SliNet(nn.Module):
         self.logit_scale = clip_model.logit_scale
         self.dtype = clip_model.dtype
 
-
-        # self.prompt_learner = PromptLearner(self.cfg, ['real', 'fake'], clip_model)
-        # self.tokenized_prompts = self.prompt_learner.tokenized_prompts
-
-
         self.class_num = 1
         if args["dataset"] == "cddb":
             self.classifier_pool = nn.ModuleList([
@@ -81,8 +76,6 @@ class SliNet(nn.Module):
             'logits': torch.cat(logits, dim=1),
             'features': image_features
         }
-
-
 
     def interface(self, image, selection):
         instance_batch = torch.stack([i.weight for i in self.prompt_pool], 0)[selection, :, :]
