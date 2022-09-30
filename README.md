@@ -36,7 +36,7 @@ Note that only NVIDIA GPUs are supported for now, and we use NVIDIA RTX 3090.
 Please refer to the following links to download data.  
 [DomainNet](http://ai.bu.edu/M3SDA/)  
 [CORe50](https://vlomonaco.github.io/core50/index.html#dataset)  
-[CDDB](https://arxiv.org/abs/2205.05467)  
+[CDDB](https://github.com/Coral79/CDDB)  
 
 Unzip the downloaded files, and you will get the following folders.
 ```
@@ -145,10 +145,10 @@ We thank the following repos providing helpful components/functions in our work.
 
 If you use any content of this repo for your work, please cite the following bib entry:
 ```
-@article{wang2022s,
+@inproceedings{wang2022s,
   title={S-Prompts Learning with Pre-trained Transformers: An Occam's Razor for Domain Incremental Learning},
   author={Wang, Yabin and Huang, Zhiwu and Hong, Xiaopeng},
-  journal={arXiv preprint arXiv:2207.12819},
+  booktitle={Conference on Neural Information Processing Systems (NeurIPS)},
   year={2022}
 }
 ```
