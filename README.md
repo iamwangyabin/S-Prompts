@@ -34,6 +34,7 @@ Note that only NVIDIA GPUs are supported for now, and we use NVIDIA RTX 3090.
 
 ## Dataset preparation
 Please refer to the following links to download the three standards domain incremental learning benchmark datasets. 
+```
 [CDDB](https://github.com/Coral79/CDDB)  
 [CORe50](https://vlomonaco.github.io/core50/index.html#dataset)  
 [DomainNet](http://ai.bu.edu/M3SDA/)  
