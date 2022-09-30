@@ -33,12 +33,44 @@ Run `conda activate sp` to activate.
 Note that only NVIDIA GPUs are supported for now, and we use NVIDIA RTX 3090. 
 
 ## Dataset preparation
-Please refer to the following links to download data.  
-[DomainNet](http://ai.bu.edu/M3SDA/)  
-[CORe50](https://vlomonaco.github.io/core50/index.html#dataset)  
+Please refer to the following links to download the three standards domain incremental learning benchmark datasets. 
 [CDDB](https://github.com/Coral79/CDDB)  
+[CORe50](https://vlomonaco.github.io/core50/index.html#dataset)  
+[DomainNet](http://ai.bu.edu/M3SDA/)  
 
 Unzip the downloaded files, and you will get the following folders.
+```
+CDDB
+├── biggan
+│   ├── train
+│   └── val
+├── gaugan
+│   ├── train
+│   └── val
+├── san
+│   ├── train
+│   └── val
+├── whichfaceisreal
+│   ├── train
+│   └── val
+├── wild
+│   ├── train
+│   └── val
+... ...
+```
+
+```
+core50
+└── core50_128x128
+    ├── labels.pkl
+    ├── LUP.pkl
+    ├── paths.pkl
+    ├── s1
+    ├── s2
+    ├── s3
+    ...
+```
+
 ```
 domainnet
 ├── clipart
@@ -60,36 +92,6 @@ domainnet
 ... ...
 ```
 
-```
-core50
-└── core50_128x128
-    ├── labels.pkl
-    ├── LUP.pkl
-    ├── paths.pkl
-    ├── s1
-    ├── s2
-    ├── s3
-    ...
-```
-```
-CDDB
-├── biggan
-│   ├── train
-│   └── val
-├── gaugan
-│   ├── train
-│   └── val
-├── san
-│   ├── train
-│   └── val
-├── whichfaceisreal
-│   ├── train
-│   └── val
-├── wild
-│   ├── train
-│   └── val
-... ...
-```
 
 ## Training:
 
@@ -100,9 +102,10 @@ Currently, there are two options for `net_type` in the config files: `slip` and 
 
 Feel free to change the parameters in the config files, following scripts will reproduce the main results in our paper.
 
-### DomainNet:
+### CDDB:
 ```
-python main.py --config configs/domainnet_slip.json
+python main.py --config configs/cddb_slip.json
+python main.py --config configs/cddb_sip.json
 ```
 
 ### CORe50:
@@ -110,11 +113,11 @@ python main.py --config configs/domainnet_slip.json
 python main.py --config configs/core50_slip.json
 ```
 
-### CDDB:
+### DomainNet:
 ```
-python main.py --config configs/cddb_slip.json
-python main.py --config configs/cddb_sip.json
+python main.py --config configs/domainnet_slip.json
 ```
+
 
 ## Evaluation:
 
