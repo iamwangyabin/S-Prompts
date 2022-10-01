@@ -1,6 +1,6 @@
 # S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning
 
-<div align="justified">
+<div align="justify">
   This is the official implementation of our NeurIPS 2022 paper "S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning".
 In this paper, we propose one simple paradigm (named as S-Prompting) and two concrete approaches. The best of the proposed approaches achieves a remarkable relative improvement (an average of about 30%) over the best of the state-of-the-art exemplar-free methods for three standard Domain Incremental Learning (DIL) tasks.
 </div>
@@ -12,7 +12,7 @@ Yabin Wang, Zhiwu Huang, Xiaopeng Hong. 2022 Conference on Neural Information Pr
 
 ## Introduction
 
-<div align="justified">
+<div align="justify">
 S-Prompts introduce a rule-breaking idea to play a win-win game for domain incremental learning.
 Specifically, S-Prompts uses a new prompting paradigm that learns the prompts independently domain by domain, and incrementally inserts the learned prompts in a pool.
 The learning process only requests the most naive cross-entropy loss for supervision. 
