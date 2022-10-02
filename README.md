@@ -39,7 +39,7 @@ Run `conda activate sp` to activate.
 Note that only NVIDIA GPUs are supported for now, and we use NVIDIA RTX 3090. 
 
 ## Dataset preparation
-Please refer to the following links to download the three standards domain incremental learning benchmark datasets. 
+Please refer to the following links to download three standard domain incremental learning benchmark datasets. 
 
 [CDDB](https://github.com/Coral79/CDDB)  
 [CORe50](https://vlomonaco.github.io/core50/index.html#dataset)  
