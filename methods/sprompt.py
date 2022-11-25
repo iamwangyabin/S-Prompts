@@ -29,10 +29,6 @@ class SPrompts(BaseLearner):
 
         self.args = args
         self.EPSILON = args["EPSILON"]
-        self.init_epoch = args["init_epoch"]
-        self.init_lr = args["init_lr"]
-        self.init_lr_decay = args["init_lr_decay"]
-        self.init_weight_decay = args["init_weight_decay"]
         self.epochs = args["epochs"]
         self.lrate = args["lrate"]
         self.lrate_decay = args["lrate_decay"]
@@ -90,16 +86,12 @@ class SPrompts(BaseLearner):
             if param.requires_grad:
                 enabled.add(name)
         print(f"Parameters to be updated: {enabled}")
-        if self._cur_task==0:
-            optimizer = optim.SGD(self._network.parameters(), momentum=0.9,lr=self.init_lr,weight_decay=self.init_weight_decay)
-            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=self.init_epoch)
-            self.run_epoch = self.init_epoch
-            self.train_function(train_loader,test_loader,optimizer,scheduler)
-        else:
-            optimizer = optim.SGD(self._network.parameters(), momentum=0.9,lr=self.lrate,weight_decay=self.weight_decay)
-            scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=self.epochs)
-            self.run_epoch = self.epochs
-            self.train_function(train_loader, test_loader, optimizer, scheduler)
+
+        optimizer = optim.SGD(filter(lambda p: p.requires_grad, self._network.parameters(
+            )), momentum=0.9,lr=self.lrate,weight_decay=self.weight_decay)
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=self.epochs)
+        self.run_epoch = self.epochs
+        self.train_function(train_loader, test_loader, optimizer, scheduler)
 
 
     def train_function(self, train_loader, test_loader, optimizer, scheduler):
