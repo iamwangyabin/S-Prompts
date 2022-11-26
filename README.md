@@ -8,7 +8,7 @@ In this paper, we propose one simple paradigm (named as S-Prompting) and two con
 
 **S-Prompts Learning with Pre-trained Transformers: An Occam’s Razor for Domain Incremental Learning** <br>
 Yabin Wang, Zhiwu Huang, Xiaopeng Hong. 2022 Conference on Neural Information Processing Systems (NeurIPS 22). <br>
-[[Paper]](https://arxiv.org/pdf/2207.12819.pdf)
+[[Paper]](https://openreview.net/pdf?id=ZVe_WeMold)
 
 ## Introduction
 
