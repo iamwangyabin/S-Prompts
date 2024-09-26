@@ -36,6 +36,9 @@ conda env create -f environment.yaml
 After this, you will get a new environment **sp** that can conduct S-Prompts experiments.  
 Run `conda activate sp` to activate.
 
+Thanks to [laitifranz](https://github.com/laitifranz). Please refer to this file: [requirements.txt](https://github.com/iamwangyabin/S-Prompts/files/13215850/requirements.txt).
+
+
 Note that only NVIDIA GPUs are supported for now, and we use NVIDIA RTX 3090. 
 
 ## Dataset preparation
